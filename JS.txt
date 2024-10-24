@@ -1,0 +1,73 @@
+JAVASCRIPT CODES
+
+document.getElementById("search-btn").addEventListener("click", findHero);
+document.addEventListener("DOMContentLoaded", fetchHeroes);
+
+let search_bar = document.getElementById("search-bar");
+const heroCardContainer = document.getElementById("heroCard");
+const heroInfo = document.getElementById("heroInfo");
+let heroData = [];
+let hero = [];
+
+function fetchHeroes() {
+    fetch("http://localhost:3000/heroes")
+        .then(response => response.json())
+        .then(data => {
+            heroData = Object.entries(data);
+            console.log(heroData);
+            showHero(heroData[0][1]);
+        })
+        .catch(error => console.error("Error fetching heroes:", error));
+}
+
+function findHero() {
+    heroData.forEach(entry => {
+        if (search_bar.value === entry[1].name) {
+            showHero(entry[1]);
+        }
+    });
+}
+
+function getRandomHero() {
+    return Math.floor(Math.random() * heroData.length);
+}
+
+function showHero(data) {
+    hero = data;
+    console.log(hero);
+    resetCard();
+
+    // Hero Name
+    const heroName = document.createElement("h2");
+    heroName.classList.add("remove");
+    heroName.innerHTML = data.name;
+    heroInfo.appendChild(heroName);
+
+    // Hero Image
+    const heroImg = document.createElement("img");
+    heroImg.classList.add("remove");
+    heroImg.setAttribute("src", data.image);
+    heroImg.classList.add("heroImg");
+    heroInfo.appendChild(heroImg);
+
+    // Hero Stats
+    data.stats.forEach(stat => {
+        const heroStat = document.createElement("h3");
+        heroStat.classList.add("remove");
+        heroStat.innerText = stat;
+        heroInfo.appendChild(heroStat);
+    });
+
+    // Hero Lore
+    const heroLore = document.createElement("p");
+    heroLore.classList.add("remove");
+    heroLore.innerText = data.Lore;
+    heroInfo.appendChild(heroLore);
+
+    
+
+function resetCard() {
+    document.querySelectorAll(".remove").forEach(element => element.remove());
+    search_bar.value = "";
+}
+}
